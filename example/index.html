@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebGL 3D 렌더러 예제</title>
+    <style>
+      canvas {
+        border: 1px solid #000;
+        display: block;
+        margin: 20px auto;
+      }
+      .controls {
+        text-align: center;
+        margin: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <div class="controls">
+      <button onclick="rotateCube()">큐브 회전</button>
+      <button onclick="changeCameraPosition()">카메라 이동</button>
+    </div>
+
+    <script type="module" src="main.js"></script>
+  </body>
+</html>

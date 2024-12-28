@@ -1,0 +1,31 @@
+{
+  "name": "webgl-3d-renderer",
+  "version": "1.0.0",
+  "description": "WebGL 기반의 간단한 3D 렌더링 엔진",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "example": "vite example",
+    "examples/basic": "vite examples/basic"
+  },
+  "keywords": [
+    "webgl",
+    "webgpu",
+    "3d",
+    "renderer",
+    "graphics"
+  ],
+  "author": "odd",
+  "license": "MIT",
+  "devDependencies": {
+    "vite": "^6.0.5"
+  },
+  "dependencies": {
+    "gl-matrix": "^3.4.3"
+  }
+}
