@@ -5,4 +5,6 @@ export const DEFAULT_FAR = 1000;
 export const SHADER_TYPES = {
   VERTEX: "vertex",
   FRAGMENT: "fragment",
-};
+} as const;
+
+export type ShaderType = (typeof SHADER_TYPES)[keyof typeof SHADER_TYPES];

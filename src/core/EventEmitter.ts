@@ -1,16 +1,20 @@
-class EventEmitter {
+type EventCallback = (data: any) => void;
+
+export class EventEmitter {
+  private events: { [key: string]: EventCallback[] };
+
   constructor() {
     this.events = {};
   }
 
-  on(event, callback) {
+  public on(event: string, callback: EventCallback): void {
     if (!this.events[event]) {
       this.events[event] = [];
     }
     this.events[event].push(callback);
   }
 
-  emit(event, data) {
+  public emit(event: string, data: any): void {
     if (this.events[event]) {
       this.events[event].forEach((callback) => callback(data));
     }

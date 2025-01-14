@@ -1,12 +1,14 @@
 export class WebGLError extends Error {
-  constructor(message) {
+  constructor(message: string) {
     super(message);
     this.name = "WebGLError";
   }
 }
 
 export class ShaderError extends Error {
-  constructor(message, shaderInfo) {
+  public shaderInfo: string;
+
+  constructor(message: string, shaderInfo: string) {
     super(message);
     this.name = "ShaderError";
     this.shaderInfo = shaderInfo;
