@@ -18,6 +18,7 @@ export class Engine {
   private gl: WebGL2RenderingContext;
   private objects: Object3D[] = [];
   private programInfo!: ProgramInfo;
+  private clearColor: number[] = [0, 0, 0, 1];
   public camera: Camera;
 
   constructor(options: EngineOptions = {}) {
@@ -122,8 +123,15 @@ export class Engine {
     return shader;
   }
 
+  public setClearColor(r: number, g: number, b: number, a: number) {
+    this.clearColor[0] = r;
+    this.clearColor[1] = g;
+    this.clearColor[2] = b;
+    this.clearColor[3] = a;
+  }
+
   public render(): void {
-    this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    this.gl.clearColor(this.clearColor[0], this.clearColor[1], this.clearColor[2], this.clearColor[3]);
     this.gl.clearDepth(1.0);
     this.gl.enable(this.gl.DEPTH_TEST);
     this.gl.depthFunc(this.gl.LEQUAL);

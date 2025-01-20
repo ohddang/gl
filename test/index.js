@@ -10,5 +10,6 @@ engine.setCanvasSize(400, 300);
 const cube = new Cube(engine.getContext(), 0, 0, -1);
 
 engine.addObject(cube);
+engine.setClearColor(0.5, 0.5, 0.5, 1);
 
 engine.render();
