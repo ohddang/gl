@@ -2,14 +2,14 @@
   "name": "garo",
   "version": "0.0.1",
   "description": "This is Simple 3D Renderer based on WebGL, WebGPU",
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.es.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
     "dev": "vite",
+    "dev:test": "vite --config vite.config.mjs --open /test/index.html",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },

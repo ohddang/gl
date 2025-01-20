@@ -137,6 +137,7 @@ export class Cube extends Object3D {
   public render(gl: WebGL2RenderingContext, programInfo: ProgramInfo): void {
     this.updateMatrix();
 
+    gl.clearColor(1, 1, 1, 1);
     gl.uniformMatrix4fv(programInfo.uniformLocations.modelViewMatrix, false, this.matrix);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.position);
