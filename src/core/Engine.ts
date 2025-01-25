@@ -2,6 +2,7 @@ import { Object3D } from "../objects/Object3D";
 import { WebGLError } from "../utils/errors";
 import { Camera } from "./Camera";
 import { ProgramInfo } from "../types/webgl";
+import { objLoad } from "../loader/fbxLoader";
 
 export interface EngineOptions {
   canvasId?: string;
@@ -143,6 +144,8 @@ export class Engine {
     for (const obj of this.objects) {
       obj.render(this.gl, this.programInfo);
     }
+
+    objLoad();
   }
 
   public setCanvasSize(width: number, height: number): void {

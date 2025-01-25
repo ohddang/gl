@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "gl-matrix": "^3.4.3",
+    "three": "^0.172.0",
     "vite-plugin-dts": "^4.4.0"
   }
 }
