@@ -10,3 +10,8 @@ declare module "three/examples/jsm/exporters/GLTFExporter" {
     parse(input: any, onParse: (result: any) => void, options?: any): void;
   }
 }
+
+declare module "*.glsl" {
+  const content: string;
+  export default content;
+}

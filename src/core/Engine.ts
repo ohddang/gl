@@ -2,6 +2,7 @@ import { Object3D } from "../objects/Object3D";
 import { WebGLError } from "../utils/errors";
 import { Camera } from "./Camera";
 import { ProgramInfo } from "../types/webgl";
+import { fs_default, vs_default } from "../shaders/defaultShader";
 
 export interface EngineOptions {
   canvasId?: string;
@@ -53,31 +54,8 @@ export class Engine {
   }
 
   private initShaders(): void {
-    const vsSource = `
-      attribute vec4 aVertexPosition;
-      attribute vec4 aVertexColor;
-      
-      uniform mat4 uModelMatrix;
-      uniform mat4 uViewProjectMatrix;
-      
-      varying lowp vec4 vColor;
-      
-      void main() {
-        gl_Position = uViewProjectMatrix * uModelMatrix * aVertexPosition;
-        vColor = aVertexColor;
-      }
-    `;
-
-    const fsSource = `
-      varying lowp vec4 vColor;
-      
-      void main() {
-        gl_FragColor = vColor;
-      }
-    `;
-
-    const vertexShader = this.compileShader(vsSource, this.gl.VERTEX_SHADER);
-    const fragmentShader = this.compileShader(fsSource, this.gl.FRAGMENT_SHADER);
+    const vertexShader = this.compileShader(vs_default, this.gl.VERTEX_SHADER);
+    const fragmentShader = this.compileShader(fs_default, this.gl.FRAGMENT_SHADER);
 
     const shaderProgram = this.gl.createProgram();
     if (!shaderProgram) {
