@@ -2,7 +2,7 @@ import { vec3 } from "gl-matrix";
 import { Object3D } from "./Object3D";
 import { ProgramInfo } from "../types/webgl";
 
-export class Cube extends Object3D {
+export class Sphere extends Object3D {
   private gl: WebGL2RenderingContext;
   private buffers!: {
     position: WebGLBuffer;
@@ -13,7 +13,7 @@ export class Cube extends Object3D {
     vertexCount: number;
   };
 
-  constructor(gl: WebGL2RenderingContext, x = 0, y = 0, z = 0) {
+  constructor(gl: WebGL2RenderingContext, x = 0, y = 0, z = 0, private radius = 1, private segments = 32) {
     super();
     this.gl = gl;
     this.position = vec3.fromValues(x, y, z);
@@ -22,86 +22,42 @@ export class Cube extends Object3D {
   }
 
   private initBuffers(): void {
-    const positions = [
-      // 앞면
-      -1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0, 1.0, 1.0,
-      // 뒷면
-      -1.0, -1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, -1.0, -1.0,
-    ];
+    const positions: number[] = [];
+    const indices: number[] = [];
+    const colors: number[] = [];
 
-    const colors = [
-      1.0,
-      0.0,
-      0.0,
-      1.0, // 빨강
-      0.0,
-      1.0,
-      0.0,
-      1.0, // 초록
-      0.0,
-      0.0,
-      1.0,
-      1.0, // 파랑
-      1.0,
-      1.0,
-      0.0,
-      1.0, // 노랑
-      1.0,
-      0.0,
-      1.0,
-      1.0, // 보라
-      0.0,
-      1.0,
-      1.0,
-      1.0, // 청록
-      0.5,
-      0.5,
-      0.5,
-      1.0, // 회색
-      1.0,
-      1.0,
-      1.0,
-      1.0, // 흰색
-    ];
+    // 구 정점 생성
+    for (let lat = 0; lat <= this.segments; lat++) {
+      const theta = (lat * Math.PI) / this.segments;
+      const sinTheta = Math.sin(theta);
+      const cosTheta = Math.cos(theta);
 
-    const indices = [
-      0,
-      1,
-      2,
-      0,
-      2,
-      3, // 앞면
-      4,
-      5,
-      6,
-      4,
-      6,
-      7, // 뒷면
-      0,
-      4,
-      7,
-      0,
-      7,
-      1, // 윗면
-      1,
-      7,
-      6,
-      1,
-      6,
-      2, // 오른쪽
-      2,
-      6,
-      5,
-      2,
-      5,
-      3, // 윗면
-      4,
-      0,
-      3,
-      4,
-      3,
-      5, // 왼쪽
-    ];
+      for (let lon = 0; lon <= this.segments; lon++) {
+        const phi = (lon * 2 * Math.PI) / this.segments;
+        const sinPhi = Math.sin(phi);
+        const cosPhi = Math.cos(phi);
+
+        const x = cosPhi * sinTheta;
+        const y = cosTheta;
+        const z = sinPhi * sinTheta;
+
+        positions.push(this.radius * x, this.radius * y, this.radius * z);
+
+        // 각 정점마다 다른 색상 지정
+        colors.push(Math.abs(x), Math.abs(y), Math.abs(z), 1.0);
+      }
+    }
+
+    // 인덱스 생성
+    for (let lat = 0; lat < this.segments; lat++) {
+      for (let lon = 0; lon < this.segments; lon++) {
+        const first = lat * (this.segments + 1) + lon;
+        const second = first + this.segments + 1;
+
+        indices.push(first, second, first + 1);
+        indices.push(second, second + 1, first + 1);
+      }
+    }
 
     this.buffers = {
       position: this.createBuffer(positions),
@@ -137,7 +93,6 @@ export class Cube extends Object3D {
   public render(gl: WebGL2RenderingContext, programInfo: ProgramInfo): void {
     this.updateMatrix();
 
-    gl.clearColor(1, 1, 1, 1);
     gl.uniformMatrix4fv(programInfo.uniformLocations.modelMatrix, false, this.matrix);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.position);

@@ -2,7 +2,6 @@ import { Object3D } from "../objects/Object3D";
 import { WebGLError } from "../utils/errors";
 import { Camera } from "./Camera";
 import { ProgramInfo } from "../types/webgl";
-import { objLoad } from "../loader/fbxLoader";
 
 export interface EngineOptions {
   canvasId?: string;
@@ -58,13 +57,13 @@ export class Engine {
       attribute vec4 aVertexPosition;
       attribute vec4 aVertexColor;
       
-      uniform mat4 uModelViewMatrix;
-      uniform mat4 uProjectionMatrix;
+      uniform mat4 uModelMatrix;
+      uniform mat4 uViewProjectMatrix;
       
       varying lowp vec4 vColor;
       
       void main() {
-        gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;
+        gl_Position = uViewProjectMatrix * uModelMatrix * aVertexPosition;
         vColor = aVertexColor;
       }
     `;
@@ -100,8 +99,8 @@ export class Engine {
         vertexColor: this.gl.getAttribLocation(shaderProgram, "aVertexColor"),
       },
       uniformLocations: {
-        projectionMatrix: this.gl.getUniformLocation(shaderProgram, "uProjectionMatrix"),
-        modelViewMatrix: this.gl.getUniformLocation(shaderProgram, "uModelViewMatrix"),
+        viewProjectMatrix: this.gl.getUniformLocation(shaderProgram, "uViewProjectMatrix"),
+        modelMatrix: this.gl.getUniformLocation(shaderProgram, "uModelMatrix"),
       },
     };
   }
@@ -133,26 +132,24 @@ export class Engine {
 
   public render(): void {
     this.gl.clearColor(this.clearColor[0], this.clearColor[1], this.clearColor[2], this.clearColor[3]);
-    this.gl.clearDepth(1.0);
-    this.gl.enable(this.gl.DEPTH_TEST);
-    this.gl.depthFunc(this.gl.LEQUAL);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
+    // 카메라의 view-projection 매트릭스 업데이트
+    const viewProjectionMatrix = this.camera.getViewProjectionMatrix();
     this.gl.useProgram(this.programInfo.program);
-    this.gl.uniformMatrix4fv(this.programInfo.uniformLocations.projectionMatrix, false, this.camera.projectionMatrix);
+    this.gl.uniformMatrix4fv(this.programInfo.uniformLocations.viewProjectMatrix, false, viewProjectionMatrix);
 
-    for (const obj of this.objects) {
-      obj.render(this.gl, this.programInfo);
+    // 각 오브젝트 렌더링
+    for (const object of this.objects) {
+      object.render(this.gl, this.programInfo);
     }
-
-    objLoad();
   }
 
   public setCanvasSize(width: number, height: number): void {
     this.canvas.width = width;
     this.canvas.height = height;
     this.gl.viewport(0, 0, width, height);
-    this.camera.aspect = width / height;
+    this.camera.setAspect(width / height);
   }
 
   /**

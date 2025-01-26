@@ -23,7 +23,7 @@ export class Camera {
   public projectionMatrix: mat4;
 
   constructor(options: CameraOptions = {}) {
-    this.position = options.position ?? vec3.fromValues(0, 0, -5);
+    this.position = options.position ?? vec3.fromValues(3, 5, -5);
     this.target = options.target ?? vec3.fromValues(0, 0, 0);
     this.up = options.up ?? vec3.fromValues(0, 1, 0);
     this.fov = options.fov ?? DEFAULT_FOV;
@@ -42,7 +42,23 @@ export class Camera {
   }
 
   public setPosition(x: number, y: number, z: number): void {
-    this.position = vec3.fromValues(x, y, z);
+    vec3.set(this.position, x, y, z);
     this.updateMatrices();
+  }
+
+  public setTarget(x: number, y: number, z: number): void {
+    vec3.set(this.target, x, y, z);
+    this.updateMatrices();
+  }
+
+  public setAspect(aspect: number): void {
+    this.aspect = aspect;
+    this.updateMatrices();
+  }
+
+  public getViewProjectionMatrix(): mat4 {
+    const viewProjectionMatrix = mat4.create();
+    mat4.multiply(viewProjectionMatrix, this.projectionMatrix, this.viewMatrix);
+    return viewProjectionMatrix;
   }
 }

@@ -5,7 +5,7 @@ export interface ProgramInfo {
     vertexColor: number;
   };
   uniformLocations: {
-    projectionMatrix: WebGLUniformLocation | null;
-    modelViewMatrix: WebGLUniformLocation | null;
+    viewProjectMatrix: WebGLUniformLocation | null;
+    modelMatrix: WebGLUniformLocation | null;
   };
 }

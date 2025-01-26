@@ -2,7 +2,7 @@ import { vec3 } from "gl-matrix";
 import { Object3D } from "./Object3D";
 import { ProgramInfo } from "../types/webgl";
 
-export class Cube extends Object3D {
+export class Cone extends Object3D {
   private gl: WebGL2RenderingContext;
   private buffers!: {
     position: WebGLBuffer;
@@ -13,7 +13,7 @@ export class Cube extends Object3D {
     vertexCount: number;
   };
 
-  constructor(gl: WebGL2RenderingContext, x = 0, y = 0, z = 0) {
+  constructor(gl: WebGL2RenderingContext, x = 0, y = 0, z = 0, private radius = 1, private height = 2, private segments = 32) {
     super();
     this.gl = gl;
     this.position = vec3.fromValues(x, y, z);
@@ -22,86 +22,39 @@ export class Cube extends Object3D {
   }
 
   private initBuffers(): void {
-    const positions = [
-      // 앞면
-      -1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0, 1.0, 1.0,
-      // 뒷면
-      -1.0, -1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, -1.0, -1.0,
-    ];
+    const positions: number[] = [];
+    const indices: number[] = [];
+    const colors: number[] = [];
 
-    const colors = [
-      1.0,
-      0.0,
-      0.0,
-      1.0, // 빨강
-      0.0,
-      1.0,
-      0.0,
-      1.0, // 초록
-      0.0,
-      0.0,
-      1.0,
-      1.0, // 파랑
-      1.0,
-      1.0,
-      0.0,
-      1.0, // 노랑
-      1.0,
-      0.0,
-      1.0,
-      1.0, // 보라
-      0.0,
-      1.0,
-      1.0,
-      1.0, // 청록
-      0.5,
-      0.5,
-      0.5,
-      1.0, // 회색
-      1.0,
-      1.0,
-      1.0,
-      1.0, // 흰색
-    ];
+    // 꼭지점 (원뿔의 끝점)
+    positions.push(0, this.height / 2, 0);
+    colors.push(1, 1, 1, 1);
 
-    const indices = [
-      0,
-      1,
-      2,
-      0,
-      2,
-      3, // 앞면
-      4,
-      5,
-      6,
-      4,
-      6,
-      7, // 뒷면
-      0,
-      4,
-      7,
-      0,
-      7,
-      1, // 윗면
-      1,
-      7,
-      6,
-      1,
-      6,
-      2, // 오른쪽
-      2,
-      6,
-      5,
-      2,
-      5,
-      3, // 윗면
-      4,
-      0,
-      3,
-      4,
-      3,
-      5, // 왼쪽
-    ];
+    // 바닥 원의 중심점
+    positions.push(0, -this.height / 2, 0);
+    colors.push(0.5, 0.5, 0.5, 1);
+
+    // 바닥 원의 정점들
+    for (let i = 0; i <= this.segments; i++) {
+      const theta = (i * 2 * Math.PI) / this.segments;
+      const x = this.radius * Math.cos(theta);
+      const z = this.radius * Math.sin(theta);
+      const y = -this.height / 2;
+
+      positions.push(x, y, z);
+      colors.push(Math.abs(Math.cos(theta)), 0.5, Math.abs(Math.sin(theta)), 1.0);
+    }
+
+    // 옆면 인덱스
+    for (let i = 0; i < this.segments; i++) {
+      indices.push(0, i + 2, i + 3);
+    }
+
+    // 바닥면 인덱스
+    for (let i = 0; i < this.segments - 1; i++) {
+      indices.push(1, i + 3, i + 2);
+    }
+    indices.push(1, 2, this.segments + 2);
 
     this.buffers = {
       position: this.createBuffer(positions),
@@ -137,7 +90,7 @@ export class Cube extends Object3D {
   public render(gl: WebGL2RenderingContext, programInfo: ProgramInfo): void {
     this.updateMatrix();
 
-    gl.clearColor(1, 1, 1, 1);
+    // modelMatrix uniform에 오브젝트의 변환 행렬을 전달
     gl.uniformMatrix4fv(programInfo.uniformLocations.modelMatrix, false, this.matrix);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.position);
