@@ -1,0 +1,1 @@
+export { OBJLoader } from "./OBJLoader";

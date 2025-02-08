@@ -1,5 +1,5 @@
 import { vec3 } from "gl-matrix";
-import { Object3D } from "./Object3D";
+import { Object3D } from "../core/Object3D";
 
 export class Cube extends Object3D {
   constructor(gl: WebGL2RenderingContext, x = 0, y = 0, z = 0) {
