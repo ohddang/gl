@@ -1,15 +1,11 @@
 import { vec3 } from "gl-matrix";
-import { Object3D, Object3DProps } from "../core/Object3D";
-
-export interface CubeProps extends Object3DProps {
-  type: 'Cube';
-}
+import { Object3D } from "../core/Object3D";
 
 export class Cube extends Object3D {
-  constructor(props: CubeProps) {
-    super(props);
-    this.position = vec3.fromValues(props.position[0], props.position[1], props.position[2]);
-    this.scale = vec3.fromValues(1, 1, 1);
+  constructor(gl: WebGL2RenderingContext, x = 0, y = 0, z = 0) {
+    super(gl);
+    this.position = vec3.fromValues(x, y, z);
+    this.scale = vec3.fromValues(0.1, 0.1, 0.1);
     this.initBuffers();
   }
 

@@ -20,5 +20,3 @@ engine.useEngine().camera.setTarget(0, 0, 0);
 engine.useEngine().camera.setPosition(0.5, 1, -3);
 
 engine.render();
-
-objLoad();

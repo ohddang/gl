@@ -1,22 +1,11 @@
-import { Object3D, Object3DProps } from "../core/Object3D";
-
-export interface ConeProps extends Object3DProps {
-  type: 'Cone';
-  radius: number;
-  height: number;
-  segments: number;
-}
+import { vec3 } from "gl-matrix";
+import { Object3D } from "../core/Object3D";
 
 export class Cone extends Object3D {
-  radius: number;
-  height: number;
-  segments: number;
-
-  constructor(props: ConeProps) {
-    super(props);
-    this.radius = props.radius;
-    this.height = props.height;
-    this.segments = props.segments;
+  constructor(gl: WebGL2RenderingContext, x = 0, y = 0, z = 0, private radius = 1, private height = 2, private segments = 32) {
+    super(gl);
+    this.position = vec3.fromValues(x, y, z);
+    this.scale = vec3.fromValues(0.1, 0.1, 0.1);
     this.initBuffers();
   }
 

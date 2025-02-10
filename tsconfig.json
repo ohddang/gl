@@ -7,6 +7,7 @@
     "skipLibCheck": true,
     "moduleResolution": "Node",
     "allowImportingTsExtensions": true,
+    "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
@@ -16,7 +17,10 @@
     "noFallthroughCasesInSwitch": true,
     "declaration": true,
     "declarationDir": "./dist/types",
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "jsx": "react",
+    "jsxFactory": "React.createElement",
+    "jsxFragmentFactory": "React.Fragment"
   },
   "include": ["src", "./types.d.ts"]
 }

@@ -97,7 +97,7 @@ export class WebGLRenderer {
 
     // 각 오브젝트 렌더링
     for (const object of objects) {
-      object.render(this.#gl, this.#programInfo);
+      object.drawElements(this.#programInfo);
     }
   }
 }

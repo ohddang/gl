@@ -1,12 +1,24 @@
 import { vec3, mat4 } from "gl-matrix";
 import { ProgramInfo } from "../types/webgl";
+import { Component } from "react";
 
-export abstract class Object3D {
-  protected gl: WebGL2RenderingContext;
-  public position: vec3;
-  public rotation: vec3;
-  public scale: vec3;
-  public matrix: mat4;
+type MeshType = 'Cube' | 'Sphere' | 'Cone';
+
+export interface Object3DProps {
+  gl?: WebGL2RenderingContext;
+  type: MeshType;
+  position: vec3;
+  rotation: vec3;
+  scale: vec3;
+}
+
+export abstract class Object3D extends Component<Object3DProps> {
+  // protected gl: WebGL2RenderingContext;
+  position: vec3;
+  rotation: vec3;
+  scale: vec3;
+  matrix: mat4;
+  gl: WebGL2RenderingContext;
 
   protected buffers!: {
     vertices: WebGLBuffer;
@@ -17,17 +29,25 @@ export abstract class Object3D {
     vertexCount: number;
   };
 
-  constructor(gl: WebGL2RenderingContext) {
-    this.gl = gl;
-    this.position = vec3.fromValues(0, 0, 0);
-    this.rotation = vec3.fromValues(0, 0, 0);
-    this.scale = vec3.fromValues(1, 1, 1);
+  constructor(props: any) {
+    super(props);
+    this.gl = props.gl;
+    this.position = props.position;
+    this.rotation = props.rotation;
+    this.scale = props.scale;
     this.matrix = mat4.create();
   }
 
   abstract initBuffers(): void;
 
+  public setGl(gl: WebGL2RenderingContext): void {
+    this.gl = gl;
+  }
+
   protected createBuffer(data: number[]): WebGLBuffer {
+    if (!this.gl) {
+      throw new Error("GL context is not set");
+    }
     const buffer = this.gl.createBuffer();
     if (!buffer) {
       throw new Error("Failed to create buffer");
@@ -38,6 +58,9 @@ export abstract class Object3D {
   }
 
   protected createIndexBuffer(data: number[]): WebGLBuffer {
+    if (!this.gl) {
+      throw new Error("GL context is not set");
+    }
     const buffer = this.gl.createBuffer();
     if (!buffer) {
       throw new Error("Failed to create index buffer");
@@ -56,21 +79,24 @@ export abstract class Object3D {
     mat4.scale(this.matrix, this.matrix, this.scale);
   }
 
-  public render(gl: WebGL2RenderingContext, programInfo: ProgramInfo): void {
+  public drawElements(programInfo: ProgramInfo): void {
+    if (!this.gl) {
+      throw new Error("GL context is not set");
+    }
     this.updateMatrix();
 
     // modelMatrix uniform에 오브젝트의 변환 행렬을 전달
-    gl.uniformMatrix4fv(programInfo.uniformLocations.modelMatrix, false, this.matrix);
+    this.gl.uniformMatrix4fv(programInfo.uniformLocations.modelMatrix, false, this.matrix);
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.vertices);
-    gl.vertexAttribPointer(programInfo.attribLocations.vertexPosition, 3, gl.FLOAT, false, 0, 0);
-    gl.enableVertexAttribArray(programInfo.attribLocations.vertexPosition);
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffers.vertices);
+    this.gl.vertexAttribPointer(programInfo.attribLocations.vertexPosition, 3, this.gl.FLOAT, false, 0, 0);
+    this.gl.enableVertexAttribArray(programInfo.attribLocations.vertexPosition);
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.color);
-    gl.vertexAttribPointer(programInfo.attribLocations.vertexColor, 4, gl.FLOAT, false, 0, 0);
-    gl.enableVertexAttribArray(programInfo.attribLocations.vertexColor);
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffers.color);
+    this.gl.vertexAttribPointer(programInfo.attribLocations.vertexColor, 4, this.gl.FLOAT, false, 0, 0);
+    this.gl.enableVertexAttribArray(programInfo.attribLocations.vertexColor);
 
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.indices);
-    gl.drawElements(gl.TRIANGLES, this.bufferInfo.vertexCount, gl.UNSIGNED_SHORT, 0);
+    this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.buffers.indices);
+    this.gl.drawElements(this.gl.TRIANGLES, this.bufferInfo.vertexCount, this.gl.UNSIGNED_SHORT, 0);
   }
 }

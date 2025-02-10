@@ -1,22 +1,11 @@
 import { vec3 } from "gl-matrix";
-import { Object3D, Object3DProps } from "../core/Object3D";
-
-export interface SphereProps extends Object3DProps {
-  type: 'Sphere';
-  radius: number;
-  segments: number;
-}
+import { Object3D } from "../core/Object3D";
 
 export class Sphere extends Object3D {
-  radius: number;
-  segments: number;
-
-  constructor(props: SphereProps) {
-    super(props);
-    this.radius = props.radius;
-    this.segments = props.segments;
-    this.position = vec3.fromValues(props.position[0], props.position[1], props.position[2]);
-    this.scale = vec3.fromValues(this.radius, this.radius, this.radius);
+  constructor(gl: WebGL2RenderingContext, x = 0, y = 0, z = 0, private radius = 1, private segments = 32) {
+    super(gl);
+    this.position = vec3.fromValues(x, y, z);
+    this.scale = vec3.fromValues(0.1, 0.1, 0.1);
     this.initBuffers();
   }
 
