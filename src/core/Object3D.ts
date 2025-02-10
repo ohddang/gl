@@ -5,20 +5,20 @@ import { Component } from "react";
 type MeshType = 'Cube' | 'Sphere' | 'Cone';
 
 export interface Object3DProps {
-  gl?: WebGL2RenderingContext;
   type: MeshType;
-  position: vec3;
-  rotation: vec3;
-  scale: vec3;
+  position: [number, number, number];
+  rotation: [number, number, number];
+  scale: [number, number, number];
+  gl?: WebGL2RenderingContext;
 }
 
-export abstract class Object3D extends Component<Object3DProps> {
+export abstract class Object3D<T extends Object3DProps = Object3DProps> extends Component<T> {
   // protected gl: WebGL2RenderingContext;
   position: vec3;
   rotation: vec3;
   scale: vec3;
   matrix: mat4;
-  gl: WebGL2RenderingContext;
+  gl: WebGL2RenderingContext | null;
 
   protected buffers!: {
     vertices: WebGLBuffer;
@@ -29,12 +29,12 @@ export abstract class Object3D extends Component<Object3DProps> {
     vertexCount: number;
   };
 
-  constructor(props: any) {
+  constructor(props: T) {
     super(props);
-    this.gl = props.gl;
-    this.position = props.position;
-    this.rotation = props.rotation;
-    this.scale = props.scale;
+    this.gl = props.gl ? props.gl : null;
+    this.position = props.position as vec3;
+    this.rotation = props.rotation as vec3;
+    this.scale = props.scale as vec3;
     this.matrix = mat4.create();
   }
 
@@ -83,6 +83,7 @@ export abstract class Object3D extends Component<Object3DProps> {
     if (!this.gl) {
       throw new Error("GL context is not set");
     }
+
     this.updateMatrix();
 
     // modelMatrix uniform에 오브젝트의 변환 행렬을 전달

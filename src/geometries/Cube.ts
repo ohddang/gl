@@ -6,7 +6,7 @@ export interface CubeProps extends Object3DProps {
 }
 
 export class Cube extends Object3D {
-  constructor(props: CubeProps) {
+  constructor(props: CubeProps ) {
     super(props);
     this.position = vec3.fromValues(props.position[0], props.position[1], props.position[2]);
     this.scale = vec3.fromValues(1, 1, 1);

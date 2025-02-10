@@ -1,3 +1,4 @@
+import { vec3 } from "gl-matrix";
 import { Object3D, Object3DProps } from "../core/Object3D";
 
 export interface ConeProps extends Object3DProps {
@@ -7,16 +8,18 @@ export interface ConeProps extends Object3DProps {
   segments: number;
 }
 
-export class Cone extends Object3D {
+export class Cone extends Object3D<ConeProps> {
   radius: number;
   height: number;
   segments: number;
 
-  constructor(props: ConeProps) {
+  constructor(props: ConeProps ) {
     super(props);
     this.radius = props.radius;
     this.height = props.height;
     this.segments = props.segments;
+    this.position = vec3.fromValues(props.position[0], props.position[1], props.position[2]);
+    this.scale = vec3.fromValues(1, 1, 1); // 기본 스케일 통일
     this.initBuffers();
   }
 

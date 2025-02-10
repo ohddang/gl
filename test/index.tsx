@@ -1,23 +1,20 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { EngineComponent } from '../src/components/EngineComponent';
-import { Cube } from '../src/objects/Cube';
-import { Cone } from '../src/objects/Cone';
-import { Sphere } from '../src/objects/Sphere';
+import { Cube } from '../src/geometries/Cube';
+import { Cone } from '../src/geometries/Cone';
+import { Sphere } from '../src/geometries/Sphere';
 
 const TestApp = () => {
   return (
     <div>
       <h1>3D Renderer Test</h1>
-      <EngineComponent width={500} height={500}>
-        {/* Cube 추가 */}
-        <Cube type="Cube" position={[0, 0, -1]} rotation={[0, 0, 0]} scale={[1, 1, 1]} />
+      <EngineComponent width={1920} height={1080}>
+        <Cube type="Cube" position={[-2, 0, -1]} rotation={[0, 0, 0]} scale={[1, 1, 1]} />
         
-        {/* Sphere 추가 */}
-        <Sphere type="Sphere" position={[-2, 0, -1]} rotation={[0, 0, 0]} scale={[1, 1, 1]} />
-        
-        {/* Cone 추가 */}
-        <Cone type="Cone" position={[2, 0, -1]} rotation={[0, 0, 0]} scale={[1, 1, 1]} />
+        {/* 두 객체가 같은 x 좌표(1)에 있어서 겹칠 수 있음 */}
+        <Sphere type="Sphere" position={[0, 0, -1]} rotation={[0, 0, 0]} scale={[1, 1, 1]} radius={1} segments={32} />
+        <Cone type="Cone" position={[2, 0, -1]} rotation={[0, 0, 0]} scale={[1, 1, 1]} radius={1} height={1} segments={32} />
       </EngineComponent>
     </div>
   );

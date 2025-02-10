@@ -24,6 +24,7 @@ export class EngineComponent extends Component<EngineComponentProps> {
   componentDidMount() {
     if (this.canvasRef.current) {
       this.engine = new Engine({ width: this.props.width, height: this.props.height, canvasRef: this.canvasRef });
+      this.engine.renderer.setCanvasSize(this.canvasRef.current, this.engine.camera, this.props.width, this.props.height);
 
       // 렌더링 시작
       this.setupScene();
@@ -55,8 +56,11 @@ export class EngineComponent extends Component<EngineComponentProps> {
 
   private setupScene() {
     if (this.engine) {
-        this.engine.camera.setTarget(-3, 3, 0);
-        this.engine.camera.setPosition(0, 1, -10);
+        this.engine.camera.setTarget(0, 0, 0);
+        this.engine.camera.aspect = 1920 / 1080;
+        this.engine.camera.near = 0.1;
+        this.engine.camera.far = 100;
+        this.engine.camera.setPosition(0, 2, -10);
     }
 
     React.Children.forEach(this.props.children, (child) => {

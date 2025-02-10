@@ -7,16 +7,16 @@ export interface SphereProps extends Object3DProps {
   segments: number;
 }
 
-export class Sphere extends Object3D {
-  radius: number;
-  segments: number;
+export class Sphere extends Object3D<SphereProps> {
+  private radius: number;
+  private segments: number;
 
   constructor(props: SphereProps) {
     super(props);
     this.radius = props.radius;
     this.segments = props.segments;
     this.position = vec3.fromValues(props.position[0], props.position[1], props.position[2]);
-    this.scale = vec3.fromValues(this.radius, this.radius, this.radius);
+    this.scale = vec3.fromValues(1, 1, 1);
     this.initBuffers();
   }
 
