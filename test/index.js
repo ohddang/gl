@@ -1,8 +1,8 @@
 import { Engine } from "../src/core/Engine";
-import { Cube } from "../src/geometries/Cube";
-import { Sphere } from "../src/geometries/Sphere";
-import { Cone } from "../src/geometries/Cone";
-import { objLoad } from "../src/loaders/OBJLoader";
+import { Cube } from "../src/components/geometries/Cube";
+import { Sphere } from "../src/components/geometries/Sphere";
+import { Cone } from "../src/components/geometries/Cone";
+
 const canvas = document.getElementById("canvas");
 
 const engine = new Engine({ canvas, width: 1920, height: 1080 });

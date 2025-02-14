@@ -366,8 +366,6 @@
   dependencies:
     undici-types "~6.20.0"
 
-<<<<<<< Updated upstream
-=======
 "@types/react-dom@^19.0.3":
   version "19.0.3"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-19.0.3.tgz#0804dfd279a165d5a0ad8b53a5b9e65f338050a4"
@@ -380,7 +378,6 @@
   dependencies:
     csstype "^3.0.2"
 
->>>>>>> Stashed changes
 "@types/stats.js@*":
   version "0.17.3"
   resolved "https://registry.yarnpkg.com/@types/stats.js/-/stats.js-0.17.3.tgz#705446e12ce0fad618557dd88236f51148b7a935"

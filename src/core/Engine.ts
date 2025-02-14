@@ -1,4 +1,4 @@
-import { Object3D } from "./Object3D";
+import { Object3D } from "../components/core/Object3D";
 import { Camera } from "./Camera";
 import { WebGLRenderer } from "../renderer";
 
@@ -16,7 +16,7 @@ export class Engine {
   camera: Camera;
   renderer: WebGLRenderer;
   canvasRef?: React.RefObject<HTMLCanvasElement | null>;
-  
+
   constructor(props: EngineOptions) {
     if (props.canvasRef?.current) {
       this.renderer = new WebGLRenderer(props.canvasRef.current);

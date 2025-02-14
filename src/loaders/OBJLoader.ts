@@ -1,13 +1,5 @@
 import { OBJLoader as Loader } from "three/examples/jsm/loaders/OBJLoader";
 
-const loader = new Loader();
-
-export const objLoad = () => {
-  loader.load("/tree.obj", (object: any) => {
-    console.log("tree", object);
-  });
-};
-
 export class OBJLoader {
   #loader: Loader;
   #progress: number;
@@ -28,7 +20,7 @@ export class OBJLoader {
   }
 
   handleProgress(e: ProgressEvent, callback: (progress: number) => void) {
-    this.#progress = e.loaded / e.total;
+    this.#progress = (e.loaded / e.total) * 100;
     callback(this.#progress);
   }
 

@@ -1,5 +1,5 @@
 import { Camera } from "../core/Camera";
-import { Object3D } from "../core/Object3D";
+import { Object3D } from "../components/core/Object3D";
 import { fs_default } from "../shaders/defaultShader";
 import { vs_default } from "../shaders/defaultShader";
 import { ProgramInfo } from "../types/webgl";
