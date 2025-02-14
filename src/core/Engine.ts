@@ -15,7 +15,7 @@ export class Engine {
   #objects: Object3D[] = [];
   camera: Camera;
   renderer: WebGLRenderer;
-  canvasRef?: React.RefObject<HTMLCanvasElement | null>;
+  canvasRef?: React.RefObject<HTMLCanvasElement | null>; // TODO : fix ref object -> element
 
   constructor(props: EngineOptions) {
     if (props.canvasRef?.current) {

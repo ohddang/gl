@@ -1,3 +1,4 @@
+import { Group } from "three";
 import { OBJLoader as Loader } from "three/examples/jsm/loaders/OBJLoader";
 
 export class OBJLoader {
@@ -9,10 +10,10 @@ export class OBJLoader {
     this.#progress = 0;
   }
 
-  load(url: string, onLoad: (data: any) => void, onProgress?: (progress: number) => void) {
+  load(url: string, onLoad: (data: Group) => void, onProgress?: (progress: number) => void) {
     this.#loader.load(
       url,
-      (object: any) => {
+      (object: Group) => {
         onLoad(object);
       },
       (e: ProgressEvent) => this.handleProgress(e, onProgress ?? (() => {}))
