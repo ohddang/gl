@@ -13,7 +13,6 @@ export interface Object3DProps {
 }
 
 export abstract class Object3D<T extends Object3DProps = Object3DProps> extends Component<T> {
-  // protected gl: WebGL2RenderingContext;
   position: vec3;
   rotation: vec3;
   scale: vec3;

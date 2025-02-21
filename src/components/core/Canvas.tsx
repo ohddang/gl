@@ -1,17 +1,37 @@
 import React, { Component } from "react";
 import { Engine, EngineOptions } from "../../core/Engine";
 import { Cube, Cone, Sphere, MeshType } from "../geometries";
+import { RootState } from "../../store";
+import { useDispatch, useSelector, connect, ConnectedProps } from "react-redux";
+import { objectSlice } from "../../store/slice/objectSlice";
 
-interface Props extends EngineOptions {
+// mapState와 mapDispatch 정의
+const mapStateToProps = (state: RootState) => ({
+  objects: state.object
+});
+
+const mapDispatchToProps = {
+  increment: objectSlice.actions.increment,
+};
+
+// connector 생성
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+interface Props extends EngineOptions, PropsFromRedux {
   width: number;
   height: number;
   children: React.ReactNode;
   style?: React.CSSProperties;
 }
 
-export class Canvas extends Component<Props> {
+class CanvasComponent extends Component<Props> {
   engine: Engine | null = null;
   canvasRef: React.RefObject<HTMLCanvasElement | null>;
+
+  dispatch = useDispatch();
+  state = useSelector((state: RootState) => state.object);
 
   constructor(props: Props) {
     super(props);
@@ -86,3 +106,5 @@ export class Canvas extends Component<Props> {
     return <canvas ref={this.canvasRef} />;
   }
 }
+
+export const Canvas = connector(CanvasComponent);
