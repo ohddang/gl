@@ -2,7 +2,7 @@ import { vec3, mat4 } from "gl-matrix";
 import { ProgramInfo } from "../../types/webgl";
 import { Component } from "react";
 
-type MeshType = "Cube" | "Sphere" | "Cone";
+type MeshType = "Cube" | "Sphere" | "Cone" | "Primitive";
 
 export interface Object3DProps {
   type: MeshType;
@@ -21,6 +21,7 @@ export abstract class Object3D<T extends Object3DProps = Object3DProps> extends 
 
   protected buffers!: {
     vertices: WebGLBuffer;
+    normals?: WebGLBuffer;
     color: WebGLBuffer;
     indices: WebGLBuffer;
   };
@@ -43,7 +44,7 @@ export abstract class Object3D<T extends Object3DProps = Object3DProps> extends 
     this.gl = gl;
   }
 
-  protected createBuffer(data: number[]): WebGLBuffer {
+  protected createBuffer(data: Float32Array): WebGLBuffer {
     if (!this.gl) {
       throw new Error("GL context is not set");
     }
@@ -52,11 +53,11 @@ export abstract class Object3D<T extends Object3DProps = Object3DProps> extends 
       throw new Error("Failed to create buffer");
     }
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
-    this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(data), this.gl.STATIC_DRAW);
+    this.gl.bufferData(this.gl.ARRAY_BUFFER, data, this.gl.STATIC_DRAW);
     return buffer;
   }
 
-  protected createIndexBuffer(data: number[]): WebGLBuffer {
+  protected createIndexBuffer(data: Uint16Array): WebGLBuffer {
     if (!this.gl) {
       throw new Error("GL context is not set");
     }
@@ -65,7 +66,7 @@ export abstract class Object3D<T extends Object3DProps = Object3DProps> extends 
       throw new Error("Failed to create index buffer");
     }
     this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, buffer);
-    this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(data), this.gl.STATIC_DRAW);
+    this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, data, this.gl.STATIC_DRAW);
     return buffer;
   }
 

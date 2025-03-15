@@ -1,5 +1,6 @@
 export { Engine } from "./core";
-export { Cube, Sphere, Cone } from "./components/geometries";
+export { Canvas } from "./components/core";
+export { Cube, Sphere, Cone, Primitive } from "./components/geometries";
 export { OBJLoader } from "./loaders";
 
 export * from "./utils/math";

@@ -1,9 +1,11 @@
-import { ConeProps } from "./Cone";
 import { CubeProps } from "./Cube";
 import { SphereProps } from "./Sphere";
+import { ConeProps } from "./Cone";
+import { PrimitiveProps } from "./Primitive";
 
-export { Cube } from "./Cube";
-export { Sphere } from "./Sphere";
-export { Cone } from "./Cone";
+export { Primitive, type PrimitiveProps } from "./Primitive";
+export { Cube, type CubeProps } from "./Cube";
+export { Sphere, type SphereProps } from "./Sphere";
+export { Cone, type ConeProps } from "./Cone";
 
-export type MeshType = CubeProps | SphereProps | ConeProps;
+export type MeshType = CubeProps | SphereProps | ConeProps | PrimitiveProps;

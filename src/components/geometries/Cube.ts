@@ -96,9 +96,9 @@ export class Cube extends Object3D<CubeProps> {
     ];
 
     this.buffers = {
-      vertices: this.createBuffer(vertices),
-      color: this.createBuffer(colors),
-      indices: this.createIndexBuffer(indices),
+      vertices: this.createBuffer(new Float32Array(vertices)),
+      color: this.createBuffer(new Float32Array(colors)),
+      indices: this.createIndexBuffer(new Uint16Array(indices)),
     };
 
     this.bufferInfo = {

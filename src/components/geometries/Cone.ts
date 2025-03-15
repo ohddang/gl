@@ -59,9 +59,9 @@ export class Cone extends Object3D<ConeProps> {
     indices.push(1, 2, this.segments + 2);
 
     this.buffers = {
-      vertices: this.createBuffer(positions),
-      color: this.createBuffer(colors),
-      indices: this.createIndexBuffer(indices),
+      vertices: this.createBuffer(new Float32Array(positions)),
+      color: this.createBuffer(new Float32Array(colors)),
+      indices: this.createIndexBuffer(new Uint16Array(indices)),
     };
 
     this.bufferInfo = {

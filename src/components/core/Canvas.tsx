@@ -1,81 +1,82 @@
-import React, { Component } from "react";
-import { Engine, EngineOptions } from "../../core/Engine";
-import { Cube, Cone, Sphere, MeshType } from "../geometries";
-import { RootState } from "../../store";
-import { useDispatch, useSelector, connect, ConnectedProps } from "react-redux";
-import { objectSlice } from "../../store/slice/objectSlice";
+import * as React from "react";
+import { Component, createRef } from "react";
+import { Engine } from "../../core/Engine";
+import { Cube, Sphere, Cone, Primitive, MeshType } from "../geometries";
 
-// mapState와 mapDispatch 정의
-const mapStateToProps = (state: RootState) => ({
-  objects: state.object
-});
-
-const mapDispatchToProps = {
-  increment: objectSlice.actions.increment,
-};
-
-// connector 생성
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
-
-interface Props extends EngineOptions, PropsFromRedux {
+interface Props {
   width: number;
   height: number;
-  children: React.ReactNode;
-  style?: React.CSSProperties;
+  children?: React.ReactNode;
+  forwardedRef?: React.RefObject<CanvasRef>;
 }
 
-class CanvasComponent extends Component<Props> {
-  engine: Engine | null = null;
-  canvasRef: React.RefObject<HTMLCanvasElement | null>;
+export interface CanvasRef {
+  getEngine: () => Engine | null;
+}
 
-  dispatch = useDispatch();
-  state = useSelector((state: RootState) => state.object);
-
-  constructor(props: Props) {
-    super(props);
-    this.canvasRef = React.createRef<HTMLCanvasElement>();
-  }
+// 내부 클래스 컴포넌트
+class CanvasClass extends Component<Props> {
+  private engineRef: Engine | null = null;
+  private canvasRef = createRef<HTMLCanvasElement>();
 
   componentDidMount() {
     if (this.canvasRef.current) {
-      this.engine = new Engine({ width: this.props.width, height: this.props.height, canvasRef: this.canvasRef });
-      this.engine.renderer.setCanvasSize(this.canvasRef.current, this.engine.camera, this.props.width, this.props.height);
+      this.engineRef = new Engine({
+        width: this.props.width,
+        height: this.props.height,
+        canvasRef: this.canvasRef,
+      });
 
-      // 렌더링 시작
+      this.engineRef.renderer.setCanvasSize(this.canvasRef.current, this.engineRef.camera, this.props.width, this.props.height);
+
       this.setupScene();
       this.animate();
+
+      // forwardedRef를 통해 메서드 노출
+      if (this.props.forwardedRef) {
+        (this.props.forwardedRef as any).current = {
+          getEngine: this.getEngine,
+        };
+      }
+    }
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    if (prevProps.width !== this.props.width || prevProps.height !== this.props.height) {
+      if (this.canvasRef.current && this.engineRef) {
+        this.engineRef.renderer.setCanvasSize(this.canvasRef.current, this.engineRef.camera, this.props.width, this.props.height);
+      }
     }
   }
 
   componentWillUnmount() {
-    // cleanup 필요한 경우 추가
+    // cleanup 로직
+    this.engineRef = null;
   }
 
-  private setupScene() {
-    if (this.engine) {
-      this.engine.camera.setTarget(0, 0, 0);
-      this.engine.camera.aspect = 1920 / 1080;
-      this.engine.camera.near = 0.1;
-      this.engine.camera.far = 100;
-      this.engine.camera.setPosition(0, 2, -10);
-    }
+  setupScene = () => {
+    if (!this.engineRef || !this.canvasRef.current) return;
+
+    this.engineRef.camera.setTarget(0, 0, 0);
+    this.engineRef.camera.aspect = 1920 / 1080;
+    this.engineRef.camera.near = 0.1;
+    this.engineRef.camera.far = 100;
+    this.engineRef.camera.setPosition(0, 2, -10);
 
     React.Children.forEach(this.props.children, (child) => {
       if (React.isValidElement(child)) {
         const object3D = this.createObject3D(child.props as MeshType);
         if (object3D) {
-          this.engine?.addObject(object3D);
+          this.engineRef?.addObject(object3D);
         }
       }
     });
-  }
+  };
 
-  private createObject3D(props: MeshType) {
-    if (!this.engine) return null;
+  createObject3D = (props: MeshType) => {
+    if (!this.engineRef) return null;
 
-    const gl = this.engine.getContext();
+    const gl = this.engineRef.getContext();
     if (!gl) return null;
 
     switch (props.type) {
@@ -85,26 +86,32 @@ class CanvasComponent extends Component<Props> {
         return new Sphere({ ...props, gl });
       case "Cone":
         return new Cone({ ...props, gl });
+      case "Primitive":
+        return new Primitive({ ...props, gl });
       default:
-        break;
+        return null;
     }
-  }
+  };
 
   animate = () => {
-    if (this.engine) {
-      this.engine.render();
+    if (this.engineRef) {
+      this.engineRef.render();
       requestAnimationFrame(this.animate);
     }
   };
 
-  // Engine 인스턴스에 접근하기 위한 메서드
-  getEngine() {
-    return this.engine;
-  }
+  getEngine = () => {
+    return this.engineRef;
+  };
 
   render() {
     return <canvas ref={this.canvasRef} />;
   }
 }
 
-export const Canvas = connector(CanvasComponent);
+// forwardRef 래퍼 함수
+export const Canvas = React.forwardRef<CanvasRef, Omit<Props, "forwardedRef">>((props, ref) => {
+  return <CanvasClass {...props} forwardedRef={ref as React.RefObject<CanvasRef>} />;
+});
+
+Canvas.displayName = "Canvas";

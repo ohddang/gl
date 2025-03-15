@@ -10,7 +10,7 @@ export default defineConfig({
       fileName: () => "index.js",
     },
     rollupOptions: {
-      external: ["gl-matrix"],
+      external: ["gl-matrix", "react", "react-dom", "react/jsx-runtime"],
     },
   },
   plugins: [

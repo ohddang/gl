@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "vite",
     "dev:test": "vite --config vite.config.mjs --open /test/index.html",
-    "build": "tsc && vite build",
+    "build": "tsc --jsx react-jsx && vite build",
     "preview": "vite preview"
   },
   "keywords": [
@@ -24,8 +24,8 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^22.10.2",
-    "@types/react": "^19.0.8",
-    "@types/react-dom": "^19.0.3",
+    "@types/react": "18.0.0",
+    "@types/react-dom": "18.0.0",
     "@types/three": "^0.173.0",
     "typescript": "^5.7.2",
     "vite": "^6.0.6"
@@ -33,9 +33,9 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.5.1",
     "@types/three": "^0.173.0",
-    "gl-matrix": "^3.4.3",
     "react": "18.0.0",
     "react-dom": "18.0.0",
+    "gl-matrix": "^3.4.3",
     "react-redux": "^9.2.0",
     "three": "^0.172.0",
     "vite-plugin-dts": "^4.4.0"
